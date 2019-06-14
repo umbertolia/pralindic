@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Category} from '../../models/category.model';
 import {ActivatedRoute, Router} from '@angular/router';
-import {FoodService} from '../../services/food.service';
+import {CategoryService} from '../../services/category.service';
+import {CommonService} from '../../services/common.service';
 
 @Component({
   selector: 'app-category-edit',
@@ -19,14 +20,14 @@ export class CategoryEditComponent implements OnInit {
 
   constructor(private route: ActivatedRoute,
               private router: Router,
-              private foodService: FoodService) {
+              private categoryService: CategoryService, private commonService: CommonService) {
 
   }
 
   ngOnInit() {
     this.category = new Category('');
     const idCat = this.route.snapshot.params['id'];
-    this.foodService.fetchSingleCategory(+idCat).then(
+    this.categoryService.fetchSingleCategory(+idCat).then(
       (categ: Category) => {
         console.log('Categorie Edition avec : ' + categ);
         this.category = categ;
@@ -67,12 +68,12 @@ export class CategoryEditComponent implements OnInit {
       this.category.photo = this.fileUrl;
     }
     const idCat = this.route.snapshot.params['id'];
-    this.foodService.updateCategorie(this.category, idCat, this.fileToUpload, this.oldFileUrl);
+    this.categoryService.updateCategorie(this.category, idCat, this.fileToUpload, this.oldFileUrl);
     this.router.navigate(['/categories']);
   }
 
   async uploadFile(file: File) {
-    await this.foodService.uploadFile(file).then(
+    await this.commonService.uploadFile(file).then(
       (url: string) => {
         this.fileUrl = url;
       });

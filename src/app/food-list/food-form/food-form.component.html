@@ -1,3 +1,30 @@
-<p>
-  food-form works!
-</p>
+<div class="row" style="max-width: 50%">
+  <div class="col-sm-8 col-sm-offset-2">
+    <h2>Nouvel aliment</h2>
+    <form [formGroup]="foodForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Nom</label>
+        <input type="text" id="name" class="form-control" formControlName="name">
+        <p class="alert alert-info" *ngIf="foodForm.controls['name'].value != '' && foodForm.controls['name'].errors">Erreur sur le nom
+      </div>
+      <div class="form-group">
+        <label for="glycemicValue">Indice Glycémique</label>
+        <input type="text" id="glycemicValue" class="form-control" formControlName="glycemicValue">
+        <p class="alert alert-info" *ngIf="foodForm.controls['glycemicValue'].value != '' && foodForm.controls['glycemicValue'].errors">Erreur sur l'indice glycémique
+      </div>
+      <div class="form-group">
+        <label for="pralValue">Indice Pral</label>
+        <input type="text" id="pralValue" class="form-control" formControlName="pralValue">
+        <p class="alert alert-info" *ngIf="foodForm.controls['pralValue'].value != '' && foodForm.controls['pralValue'].errors">Erreur sur l'indice de pral
+      </div>
+      <div>
+        <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" style="max-width: 100px">
+        <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
+      </div>
+      <div>
+        <button class="btn btn-success" type="submit" [disabled]="foodForm.invalid">Créer</button>
+      </div>
+    </form>
+    <p class="text-danger">{{errorMessage}}</p>
+  </div>
+</div>

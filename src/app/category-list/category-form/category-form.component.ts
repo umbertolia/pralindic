@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {Category} from '../../models/category.model';
-import {FoodService} from '../../services/food.service';
+import {CategoryService} from '../../services/category.service';
 import {Subscription} from 'rxjs';
 import {chechCategoryName} from '../../validators/categorie.validator';
+import {CommonService} from '../../services/common.service';
 
 @Component({
   selector: 'app-category-form',
@@ -23,8 +24,8 @@ export class CategoryFormComponent implements OnInit {
   fileToUpload: File = null;
 
   constructor(private categorieBuilder: FormBuilder,
-              private foodService: FoodService,
-              private router: Router) { }
+              private categoryService: CategoryService,
+              private router: Router, private commonService: CommonService) { }
 
   ngOnInit() {
     this.getCategoriesList();
@@ -49,13 +50,13 @@ export class CategoryFormComponent implements OnInit {
     if (this.fileUrl && this.fileUrl.length > 0) {
       newCategorie.photo = this.fileUrl;
     }
-    this.foodService.createNewCategory(newCategorie);
+    this.categoryService.createNewCategory(newCategorie);
     this.router.navigate(['/categories']);
   }
 
   async uploadFile(file: File) {
     this.fileIsUploading = true;
-    await this.foodService.uploadFile(file).then(
+    await this.commonService.uploadFile(file).then(
       (url: string) => {
         this.fileUrl = url;
         console.log('photo url dans  uploadFile : ' + this.fileUrl);
@@ -82,12 +83,12 @@ export class CategoryFormComponent implements OnInit {
   private getCategoriesList() {
     console.log('getCategoriesList()');
       console.log('liste categories avant observ : ' + this.categories);
-    this.categoriesSubscription = this.foodService.categoriesSubject.subscribe(
+    this.categoriesSubscription = this.categoryService.categoriesSubject.subscribe(
       (catListe: Category[]) => {
         this.categories = catListe;
       }
     );
-    this.foodService.fetchCategories();
+    this.categoryService.fetchCategories();
     console.log('liste categories apres emit : ' + this.categories);
   }
 }

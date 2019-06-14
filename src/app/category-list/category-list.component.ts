@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Category} from '../models/category.model';
 import {Subscription} from 'rxjs';
-import {FoodService} from '../services/food.service';
+import {CategoryService} from '../services/category.service';
 import {Router} from '@angular/router';
 
 @Component({
@@ -14,16 +14,16 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   categories: Category[];
   categoriesSubscription: Subscription;
 
-  constructor(private foodService: FoodService, private router: Router) { }
+  constructor(private categoryService: CategoryService, private router: Router) { }
 
   ngOnInit() {
-    this.categoriesSubscription = this.foodService.categoriesSubject.subscribe(
+    this.categoriesSubscription = this.categoryService.categoriesSubject.subscribe(
       (catList: Category[]) => {
         console.log('catliste : ' + catList);
         this.categories = catList;
       }
     );
-     this.foodService.fetchCategories();
+     this.categoryService.fetchCategories();
   }
 
   onNewCategory() {
@@ -31,7 +31,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteCategory(category: Category) {
-    this.foodService.deleteSingleCategory(category);
+    this.categoryService.deleteSingleCategory(category);
   }
 
   onEditCategory(idCat: number) {

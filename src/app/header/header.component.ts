@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as firebase from 'firebase';
 import {AuthentificationService} from '../services/authentification.service';
 import {Router} from '@angular/router';
+
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',

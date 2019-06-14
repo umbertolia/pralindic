@@ -1,30 +1,28 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import * as firebase from 'firebase';
 
 import {Subject} from 'rxjs';
-import {Category} from '../models/category.model';
+import {Food} from '../models/food.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FoodService {
 
-  private categories: Category[] = [];
-  categoriesSubject = new Subject<Category[]>();
+  private foods: Food[] = [];
+  foodsSubject = new Subject<Food[]>();
 
   constructor() { }
 
-  emitCategories() {
-    this.categoriesSubject.next(this.categories);
+  emitFoods() {
+    this.foodsSubject.next(this.foods);
   }
 
-  saveCategories() {
-    const catArraySize = this.categories.length;
-    console.log('saveCategories() / catArraySize : ' + catArraySize);
-    firebase.database().ref('/categories').set(this.categories);
+  saveFoods() {
+    firebase.database().ref('/foods').set(this.foods);
     return new Promise(
       (resolve) => {
-        firebase.database().ref('/categories/').once('value').then(
+        firebase.database().ref('/foods/').once('value').then(
           (value) => {
             console.log(value.val());
             resolve(value);
@@ -37,54 +35,19 @@ export class FoodService {
     );
   }
 
-  updateCategorie(categorie: Category, id: number, newPhoto: File, oldFileUrl: string) {
-    console.log('service updateCategorie');
-    const updates = {};
-    updates['catName'] = categorie.catName;
-    if (newPhoto) {
-      updates['photo'] = categorie.photo;
-    }
-    return new Promise(
-      (resolve, reject) => {
-        firebase.database().ref('/categories/' + id).update(updates).then(
-          value => {
-            console.log('mise a jour de ' + categorie);
-          },
-          erreur => {
-            console.log('erreur sur l\'update' + erreur);
-          }
-        );
-        if (oldFileUrl) {
-          // suppr de l'ancienne image
-          const refImage = firebase.storage().refFromURL(oldFileUrl);
-          refImage.delete().then(
-            () => {
-              console.log('ancienne photo supprimée');
-            }
-          ).catch(
-            (erreur) => {
-              console.log('erreur lors de la suppression, de l\'ancienne photo' + erreur);
-            }
-          );
-        }
-      }
-    );
-
-  }
-
-  fetchCategories() {
-    firebase.database().ref('/categories').on(
+  fetchFoods() {
+    firebase.database().ref('/foods').on(
       'value', (data) => {
-        this.categories = data.val() ? data.val() : [];
-        this.emitCategories();
+        this.foods = data.val() ? data.val() : [];
+        this.emitFoods();
       }
     );
   }
 
-  fetchSingleCategory(id: number) {
+  fetchSingleFood(id: number) {
     return new Promise(
       (resolve, reject) => {
-        firebase.database().ref('/categories/' + id).once('value').then(
+        firebase.database().ref('/foods/' + id).once('value').then(
           (data) => {
             resolve(data.val());
           }, (error) => {
@@ -94,18 +57,18 @@ export class FoodService {
       }
     );
   }
-  createNewCategory(category: Category) {
-    this.categories.push(category);
-    this.saveCategories();
-    this.emitCategories();
+  createNewFood(food: Food) {
+    this.foods.push(food);
+    this.saveFoods();
+    this.emitFoods();
   }
 
-  deleteSingleCategory(category: Category) {
-    console.log('service deleteSingleCategory');
-    if (category.photo) {
-      console.log('category.photo : ' + category.photo);
-      const refImage = firebase.storage().refFromURL(category.photo);
-      console.log('deleteSingleCategory : refImage' + refImage);
+  deleteSingleFood(food: Food) {
+    console.log('service deleteSingleFood');
+    if (food.photo) {
+      console.log('food.photo : ' + food.photo);
+      const refImage = firebase.storage().refFromURL(food.photo);
+      console.log('deleteSingleFood : refImage' + refImage);
       refImage.delete().then(
         () => {
           console.log('photo supprimée');
@@ -116,39 +79,15 @@ export class FoodService {
         }
       );
     }
-    const catIndex = this.categories.findIndex(
+    const foodIndex = this.foods.findIndex(
       catElement =>  {
-        if (catElement === category) {
+        if (catElement === food) {
           return true;
         }
       }
     );
-    this.categories.splice(catIndex, 1);
-    this.saveCategories();
-    this.emitCategories();
-  }
-
-  uploadFile(file: File) {
-    return new Promise(
-      (resolve, reject) => {
-        const uniqueFileName = Date.now().toString();
-        const upload = firebase.storage().ref()
-          .child('images/' + uniqueFileName + file.name)
-          .put(file);
-        upload.on(firebase.storage.TaskEvent.STATE_CHANGED,
-          () => {
-          console.log('upload en cours...');
-          },
-          (erreur) => {
-            console.log('Erreur d\'upload' + erreur);
-            reject();
-          },
-          () => {
-          resolve(upload.snapshot.ref.getDownloadURL());
-            console.log('upload terminé');
-          }
-        );
-      }
-    );
+    this.foods.splice(foodIndex, 1);
+    this.saveFoods();
+    this.emitFoods();
   }
 }

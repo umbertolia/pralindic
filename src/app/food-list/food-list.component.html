@@ -1,3 +1,17 @@
-<p>
-  food-list works!
-</p>
+<div class="row">
+  <div class="col-xs-6">
+    <div class="list-group">
+      <button class="list-group-item" *ngFor="let food of foods; let i = index" (click)="onEditFood(i)">
+        <h3 class="list-group-item-heading">
+          {{food.foodName}}
+          <button class="btn btn-default pull-right" (click)="onDeleteFood(food)">
+            <span class="glyphicon glyphicon-minus"></span>
+          </button>
+        </h3>
+      </button>
+    </div>
+    <button class="btn btn-primary" (click)="onNewFood()">Nouvel Aliment</button>
+  </div>
+</div>
+
+

@@ -1,23 +1,25 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { SignupComponent } from './signup/signup.component';
-import { SigninComponent } from './signin/signin.component';
-import { CategoryListComponent } from './category-list/category-list.component';
-import { FoodListComponent } from './food-list/food-list.component';
-import { HeaderComponent } from './header/header.component';
+import {AppComponent} from './app.component';
+import {SignupComponent} from './signup/signup.component';
+import {SigninComponent} from './signin/signin.component';
+import {CategoryListComponent} from './category-list/category-list.component';
+import {FoodListComponent} from './food-list/food-list.component';
+import {HeaderComponent} from './header/header.component';
 import {AuthentificationService} from './services/authentification.service';
 import {AuthGuardService} from './services/auth-guard.service';
-import {FoodService} from './services/food.service';
+import {CategoryService} from './services/category.service';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {RouterModule, Routes} from '@angular/router';
-import { CategoryFormComponent } from './category-list/category-form/category-form.component';
-import { CategoryEditComponent } from './category-list/category-edit/category-edit.component';
-import { FoodFormComponent } from './food-list/food-form/food-form.component';
+import {CategoryFormComponent} from './category-list/category-form/category-form.component';
+import {CategoryEditComponent} from './category-list/category-edit/category-edit.component';
+import {FoodFormComponent} from './food-list/food-form/food-form.component';
 import {FoodEditComponent} from './food-list/food-edit/food-edit.component';
-import { FoodManagerComponent } from './food-manager/food-manager.component';
+import {FoodManagerComponent} from './food-manager/food-manager.component';
+import {FoodService} from './services/food.service';
+import {CommonService} from './services/common.service';
 
 const appRoutes: Routes = [
   { path: 'auth/signup', component: SignupComponent },
@@ -54,7 +56,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes)
   ],
-  providers: [AuthentificationService, AuthGuardService, FoodService],
+  providers: [AuthentificationService, AuthGuardService, CategoryService, FoodService, CommonService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
