@@ -1,0 +1,20 @@
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+    <h2>Créer une catégorie</h2>
+    <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+      <label for="name">Nom</label>
+      <input type="text" id="name" class="form-control" formControlName="name">
+        <p class="alert alert-info" *ngIf="categorieForm.controls['name'].hasError('forbiddenNameCat')">La catégorie existe déja !</p>
+      </div>
+      <div class="form-group">
+        <h4>Ajouter une photo</h4>
+        <img [src]="fileUrl" style="max-width: 100px">
+        <input type="file"  (change)="onSelectFiles($event)" class="form-control" accept="image/*">
+        <p class="text-success" *ngIf="fileUploaded">Fichier chargé</p>
+      </div>
+      <button class="btn btn-success" type="submit" [disabled]="categorieForm.invalid || fileIsUploading">Créer</button>
+    </form>
+    <p class="text-danger">{{errorMessage}}</p>
+  </div>
+</div>

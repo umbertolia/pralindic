@@ -1,0 +1,23 @@
+<div class="row">
+  <div class="col-xs-12">
+    <h1>{{category.catName}}</h1>
+    <div *ngIf="!category.photo">
+      <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" style="max-width: 100px">
+      <button type="button" *ngIf="!category.photo" class="btn btn btn-primary" (click)="selectImage.click()" >
+        <label *ngIf="fileUrl">Modifier Image</label>
+        <label *ngIf="!fileUrl">Ajouter Image</label>
+      </button>
+      <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
+    </div>
+
+    <div *ngIf="category.photo">
+      <img style="max-width: 100px" [src]="fileUrl" (click)="changeImage.click()" />
+      <input #changeImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
+    </div>
+
+    <button class="btn btn-success" type="submit" (click)="valider()">valider</button>
+    <button class="btn btn-default" (click)="onPrevious()">retour</button>
+
+  </div>
+</div>
+
