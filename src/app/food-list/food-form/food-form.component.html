@@ -1,30 +1,44 @@
 <div class="row" style="max-width: 50%">
   <div class="col-sm-8 col-sm-offset-2">
-    <h2>Nouvel aliment</h2>
-    <form [formGroup]="foodForm" (ngSubmit)="onSubmit()">
+    <h2 *ngIf="createMode" >Nouvel aliment</h2>
+    <h2 *ngIf="!createMode" >Modification aliment</h2>
+    <form (ngSubmit)="onSubmit()" [formGroup]="foodForm">
       <div class="form-group">
         <label for="name">Nom</label>
-        <input type="text" id="name" class="form-control" formControlName="name">
-        <p class="alert alert-info" *ngIf="foodForm.controls['name'].value != '' && foodForm.controls['name'].errors">Erreur sur le nom
+        <input [ngModel]="currentFood.foodName" [readOnly]="!createMode" class="form-control"  formControlName="name" id="name" type="text">
+        <div *ngIf="createMode && foodForm.controls['name'].errors && foodForm.controls['name'].value">
+            <p *ngIf="foodForm.controls['name'].hasError('forbiddenNameFood'); else commonNameError" class="alert alert-info"> L'aliment existe déjà</p>
+            <ng-template #commonNameError>
+              <p class="alert alert-info">Erreur sur le nom</p>
+            </ng-template>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Catégorie</label>
+        <select formControlName="categoriesControl" >
+          <option  *ngFor="let category of categories | keyvalue" [ngValue]=category.key [selected]="category.key===currentFood.categoryName">{{category.value.catName}}</option>
+        </select>
       </div>
       <div class="form-group">
         <label for="glycemicValue">Indice Glycémique</label>
-        <input type="text" id="glycemicValue" class="form-control" formControlName="glycemicValue">
-        <p class="alert alert-info" *ngIf="foodForm.controls['glycemicValue'].value != '' && foodForm.controls['glycemicValue'].errors">Erreur sur l'indice glycémique
+        <input [value]="currentFood.glycemicIndex" class="form-control" formControlName="glycemicValue" id="glycemicValue" type="text">
+        <p *ngIf="foodForm.controls['glycemicValue'].value != '' && foodForm.controls['glycemicValue'].errors" class="alert alert-info">Erreur sur l'indice glycémique</p>
       </div>
       <div class="form-group">
         <label for="pralValue">Indice Pral</label>
-        <input type="text" id="pralValue" class="form-control" formControlName="pralValue">
-        <p class="alert alert-info" *ngIf="foodForm.controls['pralValue'].value != '' && foodForm.controls['pralValue'].errors">Erreur sur l'indice de pral
+        <input [value]="currentFood.pralIndex" class="form-control" formControlName="pralValue" id="pralValue" type="text">
+        <p *ngIf="foodForm.controls['pralValue'].value != '' && foodForm.controls['pralValue'].errors" class="alert alert-info">Erreur sur l'indice de pral</p>
       </div>
       <div>
-        <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" style="max-width: 100px">
-        <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
+        <img (click)="selectImage.click()" *ngIf="fileUrl" [src]="fileUrl" style="max-width: 100px">
+        <input #selectImage (change)="onSelectFiles($event)" style="display:none;" type="file" />
       </div>
       <div>
-        <button class="btn btn-success" type="submit" [disabled]="foodForm.invalid">Créer</button>
+        <button *ngIf="createMode" [disabled]="foodForm.invalid" class="btn btn-success" type="submit">Créer</button>
+        <button *ngIf="!createMode" [disabled]="foodForm.controls['name'].setValidators(null) && foodForm.invalid" class="btn btn-success" type="submit">Modifier</button>
       </div>
     </form>
     <p class="text-danger">{{errorMessage}}</p>
   </div>
 </div>
+

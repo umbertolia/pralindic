@@ -1,13 +1,12 @@
-import {Category} from './category.model';
 
 export class Food {
   photo: string;
   price: number;
-  glycemicIndex: number;
-  pralIndex: number;
+  categoryName: string;
+  chargeGlycemique: number;
+  carboHydratPercent: number;
+  isFavorite: boolean;
 
 
-  constructor(public foodName: string, public category: Category) {
-
-  }
+  constructor(public foodName: string, public glycemicIndex: number, public pralIndex: number) {}
 }

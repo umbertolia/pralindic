@@ -1,0 +1,49 @@
+{
+  "foods" : [ {
+    "categoryIndex" : "1",
+    "foodName" : "eau",
+    "glycemicIndex" : "10",
+    "pralIndex" : "5"
+  }, {
+    "categoryIndex" : "",
+    "foodName" : "pain",
+    "glycemicIndex" : "10",
+    "pralIndex" : "15"
+  }, {
+    "categoryIndex" : "",
+    "foodName" : "haricots",
+    "glycemicIndex" : "1",
+    "pralIndex" : "5"
+  }, {
+    "categoryIndex" : "",
+    "foodName" : "noix",
+    "glycemicIndex" : "45",
+    "pralIndex" : "33"
+  }, {
+    "categoryIndex" : "",
+    "foodName" : "pommes",
+    "glycemicIndex" : "17",
+    "pralIndex" : "25"
+  } , {
+    "categoryIndex" : "",
+    "foodName" : "farine",
+    "glycemicIndex" : "9",
+    "pralIndex" : "15"
+  } , {
+    "categoryIndex" : "",
+    "foodName" : "levure",
+    "glycemicIndex" : "5",
+    "pralIndex" : "5"
+  } , {
+    "categoryIndex" : "",
+    "foodName" : "poivrons",
+    "glycemicIndex" : "12",
+    "pralIndex" : "22"
+  } , {
+    "categoryIndex" : "",
+    "foodName" : "bananes",
+    "glycemicIndex" : "2",
+    "pralIndex" : "78"
+  }  
+  ]
+}

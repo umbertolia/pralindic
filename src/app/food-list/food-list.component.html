@@ -1,17 +1,35 @@
-<div class="row">
-  <div class="col-xs-6">
-    <div class="list-group">
-      <button class="list-group-item" *ngFor="let food of foods; let i = index" (click)="onEditFood(i)">
-        <h3 class="list-group-item-heading">
-          {{food.foodName}}
-          <button class="btn btn-default pull-right" (click)="onDeleteFood(food)">
-            <span class="glyphicon glyphicon-minus"></span>
-          </button>
-        </h3>
-      </button>
-    </div>
-    <button class="btn btn-primary" (click)="onNewFood()">Nouvel Aliment</button>
-  </div>
+<div>
+  <mat-table style="width: 50%" [dataSource]="dataSource"  class="mat-elevation-z8">
+
+    <ng-container matColumnDef="foodName">
+      <mat-header-cell *matHeaderCellDef > Nom </mat-header-cell>
+        <mat-cell *matCellDef="let food"> {{food.foodName}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="glycemicIndex">
+      <mat-header-cell *matHeaderCellDef > IG </mat-header-cell>
+        <mat-cell *matCellDef="let food"> {{food.glycemicIndex}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="pralIndex">
+      <mat-header-cell *matHeaderCellDef > Indice Pral</mat-header-cell>
+      <mat-cell *matCellDef="let food" > {{food.pralIndex}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="icon">
+      <mat-header-cell *matHeaderCellDef >  </mat-header-cell>
+      <mat-cell *matCellDef="let food" (click)="$event.stopPropagation()"><mat-icon (click)="onDeleteFood(food);">delete_forever</mat-icon> </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClick(row)"></mat-row>
+
+  </mat-table>
+</div>
+
+<div class="btn-toolbar">
+  <button class="btn btn-primary"  (click)="onNewFood()">Nouvel Aliment</button>
+  <button class="btn btn-primary" (click)="onReinitFoods()">Reinit</button>
 </div>
 
 

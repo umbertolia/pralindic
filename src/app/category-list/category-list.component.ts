@@ -3,6 +3,9 @@ import {Category} from '../models/category.model';
 import {Subscription} from 'rxjs';
 import {CategoryService} from '../services/category.service';
 import {Router} from '@angular/router';
+import {MatTableDataSource} from '@angular/material';
+import {FoodService} from '../services/food.service';
+import {CommonService} from '../services/common.service';
 
 @Component({
   selector: 'app-category-list',
@@ -11,16 +14,23 @@ import {Router} from '@angular/router';
 })
 export class CategoryListComponent implements OnInit, OnDestroy {
 
-  categories: Category[];
+  categories: Map<string, Category>;
   categoriesSubscription: Subscription;
+  displayedColumns: string[] = ['catName', 'icon'];
+  dataSource: MatTableDataSource<Category>;
 
-  constructor(private categoryService: CategoryService, private router: Router) { }
+
+
+  constructor(private categoryService: CategoryService,
+              private foodService: FoodService,
+              private commonService: CommonService,
+              private router: Router) { }
 
   ngOnInit() {
     this.categoriesSubscription = this.categoryService.categoriesSubject.subscribe(
-      (catList: Category[]) => {
-        console.log('catliste : ' + catList);
-        this.categories = catList;
+      (categoryList: Map<string, Category>) => {
+        this.categories = categoryList;
+        this.dataSource = new MatTableDataSource(this.commonService.getArrayFromMap(this.categories));
       }
     );
      this.categoryService.fetchCategories();
@@ -31,11 +41,18 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteCategory(category: Category) {
-    this.categoryService.deleteSingleCategory(category);
+    this.categoryService.deleteSingleCategory(category).then(
+      (catDeleted: boolean) => {
+        if (catDeleted && category.foods) {
+          // on supprime son nom pour chaque aliment associé
+          this.foodService.deleteCategoryIndexFromFoods(category.foods);
+        }
+      }
+    );
   }
 
-  onEditCategory(idCat: number) {
-    this.router.navigate(['/categories', 'edit', idCat]);
+  onRowClick(category: Category) {
+    this.router.navigate(['/categories', 'edit', category.catName]);
   }
 
   ngOnDestroy() {

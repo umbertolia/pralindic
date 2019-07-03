@@ -4,8 +4,9 @@ import {Router} from '@angular/router';
 import {Category} from '../../models/category.model';
 import {CategoryService} from '../../services/category.service';
 import {Subscription} from 'rxjs';
-import {chechCategoryName} from '../../validators/categorie.validator';
+import {chechCategoryName} from '../../validators/pralindic.validator';
 import {CommonService} from '../../services/common.service';
+import {AppConstants} from '../../common/constantes';
 
 @Component({
   selector: 'app-category-form',
@@ -20,7 +21,7 @@ export class CategoryFormComponent implements OnInit {
   fileUrl: string;
   fileUploaded: boolean;
   categoriesSubscription: Subscription;
-  categories: Category[];
+  categories = new Map<string, Category>();
   fileToUpload: File = null;
 
   constructor(private categorieBuilder: FormBuilder,
@@ -37,29 +38,28 @@ export class CategoryFormComponent implements OnInit {
       {
         name: ['', [Validators.required, Validators.pattern(/[a-zA-Z]/), chechCategoryName(this.categories)]]
       });
+    this.fileUrl = AppConstants.getIconAddPhoto();
   }
 
   async onSubmit() {
+    const newCategorie = new Category(this.categorieForm.get('name').value);
     if (this.fileToUpload) {
-      await this.uploadFile(this.fileToUpload);
+      await this.uploadFile(this.fileToUpload, newCategorie.constructor.name.concat('_').concat(newCategorie.catName));
       console.log('photo url dans onSubmit : ' + this.fileUrl);
     }
 
-    const name = this.categorieForm.get('name').value;
-    const newCategorie = new Category(name);
-    if (this.fileUrl && this.fileUrl.length > 0) {
+    if (this.fileUrl && this.fileUrl.length > 0 && this.fileToUpload) {
       newCategorie.photo = this.fileUrl;
     }
     this.categoryService.createNewCategory(newCategorie);
     this.router.navigate(['/categories']);
   }
 
-  async uploadFile(file: File) {
+  async uploadFile(file: File, additionalString: string) {
     this.fileIsUploading = true;
-    await this.commonService.uploadFile(file).then(
+    await this.commonService.uploadFile(file, additionalString).then(
       (url: string) => {
         this.fileUrl = url;
-        console.log('photo url dans  uploadFile : ' + this.fileUrl);
         this.fileIsUploading = false;
         this.fileUploaded = true;
       }
@@ -81,14 +81,11 @@ export class CategoryFormComponent implements OnInit {
   }
 
   private getCategoriesList() {
-    console.log('getCategoriesList()');
-      console.log('liste categories avant observ : ' + this.categories);
     this.categoriesSubscription = this.categoryService.categoriesSubject.subscribe(
-      (catListe: Category[]) => {
-        this.categories = catListe;
+      (categoryList: Map<string, Category>) => {
+        this.categories = categoryList;
       }
     );
     this.categoryService.fetchCategories();
-    console.log('liste categories apres emit : ' + this.categories);
   }
 }

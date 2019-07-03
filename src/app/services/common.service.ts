@@ -1,17 +1,25 @@
 import {Injectable} from '@angular/core';
 import * as firebase from 'firebase';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
+import {AbstractControl} from '@angular/forms';
+import {Food} from '../models/food.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CommonService {
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) {  }
 
-  uploadFile(file: File) {
+  public getJSON(url: string): Observable<any> {
+    return this.httpClient.get(url);
+  }
+
+  uploadFile(file: File, additionalString: string) {
     return new Promise(
       (resolve, reject) => {
-        const uniqueFileName = Date.now().toString();
+        const uniqueFileName = Date.now().toString().concat('_').concat(additionalString).concat('_');
         const upload = firebase.storage().ref()
           .child('images/' + uniqueFileName + file.name)
           .put(file);
@@ -30,5 +38,28 @@ export class CommonService {
         );
       }
     );
+  }
+
+  public isAbstractControlNotEmpty(control: AbstractControl): boolean {
+    if (control != null && control.value !== '') {
+        return true;
+    }
+    return  false;
+  }
+
+  public getArrayFromMap(myMap: Map<string, Object>) {
+    const array = [];
+    myMap.forEach((value: Food, key: string) => {
+      console.log(key, value);
+      array.push(value);
+    });
+    return array;
+  }
+
+  public isNotNullOrEmpty(value: string): boolean {
+    if (value && value.trim().length > 0) {
+      return true;
+    }
+    return false;
   }
 }

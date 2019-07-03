@@ -20,16 +20,18 @@ import {FoodEditComponent} from './food-list/food-edit/food-edit.component';
 import {FoodManagerComponent} from './food-manager/food-manager.component';
 import {FoodService} from './services/food.service';
 import {CommonService} from './services/common.service';
+import {MaterialModule} from './common/material.module';
+import {AppConstants} from './common/constantes';
 
 const appRoutes: Routes = [
   { path: 'auth/signup', component: SignupComponent },
   { path: 'auth/signin', component: SigninComponent },
   { path: 'categories', canActivate: [AuthGuardService], component: CategoryListComponent},
   { path: 'categories/new', canActivate: [AuthGuardService], component: CategoryFormComponent},
-  { path: 'categories/edit/:id', canActivate: [AuthGuardService], component: CategoryEditComponent},
+  { path: 'categories/edit/:categoryName', canActivate: [AuthGuardService], component: CategoryEditComponent},
   { path: 'foods', canActivate: [AuthGuardService], component: FoodListComponent},
   { path: 'foods/new', canActivate: [AuthGuardService], component: FoodFormComponent},
-  { path: 'foods/edit/:id', canActivate: [AuthGuardService], component: FoodEditComponent},
+  { path: 'foods/edit/:foodName', canActivate: [AuthGuardService], component: FoodEditComponent},
   { path: 'manager', canActivate: [AuthGuardService], component: FoodManagerComponent},
   { path: '', redirectTo: 'manager', pathMatch: 'full'},
   { path: '**', redirectTo: 'manager'}
@@ -54,9 +56,10 @@ const appRoutes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    RouterModule.forRoot(appRoutes)
+    RouterModule.forRoot(appRoutes),
+    MaterialModule
   ],
-  providers: [AuthentificationService, AuthGuardService, CategoryService, FoodService, CommonService],
+  providers: [AuthentificationService, AuthGuardService, CategoryService, FoodService, CommonService, AppConstants],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

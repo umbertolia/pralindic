@@ -7,12 +7,11 @@
       <input type="text" id="name" class="form-control" formControlName="name">
         <p class="alert alert-info" *ngIf="categorieForm.controls['name'].hasError('forbiddenNameCat')">La catégorie existe déja !</p>
       </div>
-      <div class="form-group">
-        <h4>Ajouter une photo</h4>
-        <img [src]="fileUrl" style="max-width: 100px">
-        <input type="file"  (change)="onSelectFiles($event)" class="form-control" accept="image/*">
-        <p class="text-success" *ngIf="fileUploaded">Fichier chargé</p>
+      <div>
+        <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" style="max-width: 100px">
+        <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
       </div>
+        <p class="text-success" *ngIf="fileUploaded">Fichier chargé</p>
       <button class="btn btn-success" type="submit" [disabled]="categorieForm.invalid || fileIsUploading">Créer</button>
     </form>
     <p class="text-danger">{{errorMessage}}</p>

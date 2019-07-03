@@ -1,17 +1,23 @@
-<div class="row">
-  <div class="col-xs-6">
-    <div class="list-group">
-      <button class="list-group-item" *ngFor="let category of categories; let i = index" (click)="onEditCategory(i)">
-        <h3 class="list-group-item-heading">
-          {{category.catName}}
-          <button class="btn btn-default pull-right" (click)="onDeleteCategory(category)">
-            <span class="glyphicon glyphicon-minus"></span>
-          </button>
-        </h3>
-      </button>
-    </div>
-    <button class="btn btn-primary" (click)="onNewCategory()">Nouvelle Catégorie</button>
-  </div>
+<div>
+  <mat-table style="width: 50%"  [dataSource]="dataSource"  class="mat-elevation-z8">
+
+    <ng-container matColumnDef="catName">
+      <mat-header-cell *matHeaderCellDef > Nom </mat-header-cell>
+      <mat-cell *matCellDef="let category"> {{category.catName}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="icon">
+      <mat-header-cell *matHeaderCellDef >  </mat-header-cell>
+      <mat-cell *matCellDef="let category" (click)=" $event.stopPropagation()"><mat-icon (click)="onDeleteCategory(category);">delete_forever</mat-icon> </mat-cell>
+    </ng-container>
+
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClick(row)"></mat-row>
+
+  </mat-table>
 </div>
 
-
+<p>
+  <button class="btn btn-primary" (click)="onNewCategory()">Nouvelle Catégorie</button>
+</p>
