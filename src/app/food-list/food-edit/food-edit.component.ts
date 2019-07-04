@@ -4,8 +4,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../services/common.service';
 import {FoodService} from '../../services/food.service';
 import {AppConstants} from '../../common/constantes';
-import {CategoryService} from '../../services/category.service';
-import {Category} from '../../models/category.model';
 import {CategoryEditComponent} from '../../category-list/category-edit/category-edit.component';
 import * as deepEqual from 'deep-equal';
 
@@ -21,17 +19,14 @@ export class FoodEditComponent implements OnInit {
   fileUrl: string;
   fileToUpload: File = null;
   oldFood: Food;
-  category: Category;
   @Input() foodName;
   @Input() editionMode = true;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
               private foodService: FoodService,
-              private commonService: CommonService,
-              private categoryService: CategoryService) {
-
-  }
+              private commonService: CommonService
+  ) {}
 
   ngOnInit() {
     this.food = new Food('', 0, 0);
@@ -100,25 +95,15 @@ export class FoodEditComponent implements OnInit {
         this.food = { ...foodBase};
         this.oldFood = { ...foodBase};
         this.fileUrl = this.food.photo ? this.food.photo : AppConstants.getIconAddPhoto();
-        // recup de la catégorie
-        if (this.commonService.isNotNullOrEmpty(foodBase.categoryName)) {
-          this.categoryService.fetchSingleCategory(foodBase.categoryName).then(
-            (category: Category) => {
-              this.category = category;
-            });
-        }
       },
       (error) => {
-        console.log('Impossible de récupérer l\'aliment ' + foodName);
+        console.log('Impossible de récupérer l\'aliment ' + foodName + 'erreur : ' + error);
       }
     );
   }
 
-  callFoodForm() {
-    const params = {};
-    params['createMode'] = false;
-    params['foodName'] = this.food.foodName;
-    this.router.navigate(['/foods', 'new'], {queryParams : params });
+  onDeleteFood(food: Food) {
+    this.foodService.deleteSingleFood(food);
   }
 
 }

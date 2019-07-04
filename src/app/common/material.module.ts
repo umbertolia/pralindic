@@ -2,7 +2,7 @@
 
 import { NgModule } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import {MatButtonModule, MatCardModule, MatIconModule, MatToolbarModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatIconModule, MatPaginatorModule, MatSortModule, MatToolbarModule} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatGridListModule} from '@angular/material';
 @NgModule({
@@ -13,7 +13,9 @@ import {MatGridListModule} from '@angular/material';
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSortModule,
+    MatPaginatorModule
   ],
   exports: [
     MatTableModule,
@@ -22,7 +24,9 @@ import {MatGridListModule} from '@angular/material';
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSortModule,
+    MatPaginatorModule
   ]
 })
 

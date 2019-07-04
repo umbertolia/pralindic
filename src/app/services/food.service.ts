@@ -18,35 +18,22 @@ export class FoodService {
     this.foodsSubject.next(this.foods);
   }
 
-  saveFoods() {
-    firebase.database().ref('/foods').set(this.foods);
-    return new Promise(
-      (resolve) => {
-        firebase.database().ref('/foods/').once('value').then(
-          (value) => {
-            console.log(value.val());
-            resolve(value);
-          },
-          erreur => {
-            console.log(erreur);
-          }
-        );
-      }
-    );
-  }
-
   updateFood(newFood: Food, oldFood: Food, newPhotoUploaded: boolean): Promise<boolean> {
     console.log('service updateFood');
     const updates = {};
     updates['foodName'] = newFood.foodName;
     updates['glycemicIndex'] = newFood.glycemicIndex;
     updates['pralIndex'] = newFood.pralIndex;
+    updates['favorite'] = newFood.favorite;
+
     if (newFood.categoryName) {
       updates['categoryName'] = newFood.categoryName;
     }
     if (newPhotoUploaded && newFood.photo) {
       updates['photo'] = newFood.photo;
     }
+
+
     return new Promise(
       (resolve) => {
         firebase.database().ref('/foods/').child(newFood.foodName).update(updates).then(
@@ -63,8 +50,6 @@ export class FoodService {
             if (newFood.foodName !== oldFood.foodName) {
               this.updateChildNameAndCategoryFoodName(newFood, oldFood);
             }
-            // cas modification de la categorie
-
           },
             reason => {
               console.log('erreur sur updateChildNameAndCategoryFoodName()' + reason);
@@ -157,14 +142,15 @@ export class FoodService {
           }
         );
       }
-      const deleted = this.foods.delete(food.foodName);
-      this.saveFoods().then(
+      let deleted = false;
+      firebase.database().ref('/foods').child(food.foodName).remove().then(
         value => {
+          deleted =  this.foods.delete(food.foodName);
+          this.emitFoods();
           this.categoryService.deleteFoodNameFromCategory(food);
+          resolve(deleted);
         }
       );
-      this.emitFoods();
-      resolve(deleted);
     });
   }
 

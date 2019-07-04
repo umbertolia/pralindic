@@ -12,9 +12,8 @@ import {CommonService} from './common.service';
 export class CategoryService {
 
   private categories = new Map<string, Category>();
-  categoriesSubject = new Subject<Map<string, Category>>();
-
   private foodsName = [];
+  categoriesSubject = new Subject<Map<string, Category>>();
   foodsNameSubject = new Subject<String[]>();
 
   constructor(private commonService: CommonService) {
@@ -28,23 +27,6 @@ export class CategoryService {
     this.foodsNameSubject.next(this.foodsName);
   }
 
-  saveCategories() {
-    console.log('service saveCategories');
-    firebase.database().ref('/categories').push(this.categories);
-    return new Promise(
-      (resolve) => {
-        firebase.database().ref('/categories/').once('value').then(
-          (value) => {
-            resolve(value);
-          },
-          erreur => {
-            console.log(erreur);
-          }
-        );
-      }
-    );
-  }
-
   updateCategorie(newCategory: Category, oldCategory: Category, newPhotoUploaded: boolean) {
     console.log('service updateCategorie');
     const updates = {};
@@ -53,7 +35,7 @@ export class CategoryService {
       updates['photo'] = newCategory.photo;
     }
     return new Promise(
-      (resolve, reject) => {
+      () => {
         firebase.database().ref('/categories/').child(newCategory.catName).update(updates).then(
           value => {
             console.log('mise a jour de ' + newCategory.catName);
@@ -96,7 +78,7 @@ export class CategoryService {
       }
       this.categories.get(newFood.categoryName).foods.push(newFood.foodName);
       return new Promise(
-        (resolve, reject) => {
+        (resolve) => {
           firebase.database().ref('/categories/').child(newFood.categoryName).
           child('foods').update(this.categories.get(newFood.categoryName).foods).then(
             value => {
@@ -186,7 +168,7 @@ export class CategoryService {
   fetchFoodsNameFromCategory(categoryName: string) {
     console.log('service fetchFoodsNameFromCategory');
     const foodListName = [];
-    firebase.database().ref('/categories/').child(categoryName).child('/foods/').on(
+    firebase.database().ref('/categories/').child(categoryName).child('/foods/').once(
       'value', (data) => {
         console.log('data.val : ' + data.val());
         data.forEach(function (elmt) {
@@ -203,7 +185,8 @@ export class CategoryService {
       const foodIndex = this.categories.get(food.categoryName).foods.indexOf(food.foodName);
       this.categories.get(food.categoryName).foods.splice(foodIndex, 1);
       firebase.database().ref('/categories/').child(food.categoryName).child('/foods/').set(this.categories.get(food.categoryName).foods);
-      this.emitCategories();
+      this.foodsName.splice(foodIndex, 1);
+      this.emitFoodsName();
     }
   }
 

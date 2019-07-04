@@ -1,4 +1,5 @@
-import {Component, OnInit} from '@angular/core';
+
+import {Component, NgModule, OnInit} from '@angular/core';
 import {Category} from '../../models/category.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CategoryService} from '../../services/category.service';
@@ -6,18 +7,29 @@ import {CommonService} from '../../services/common.service';
 import {AppConstants} from '../../common/constantes';
 import {Subscription} from 'rxjs';
 import * as deepEqual from 'deep-equal';
+import {MaterialModule} from '../../common/material.module';
+
 
 @Component({
   selector: 'app-category-edit',
   templateUrl: './category-edit.component.html',
   styleUrls: ['./category-edit.component.scss']
 })
+
+@NgModule({
+  imports: [
+    MaterialModule
+  ],
+  exports: [
+    MaterialModule
+  ]
+})
+
 export class CategoryEditComponent implements OnInit {
 
   category: Category;
   fileUrl: string;
   fileToUpload: File = null;
-  oldFileUrl: string;
   foodsSubscription: Subscription;
   oldCategory: Category;
 
@@ -31,6 +43,7 @@ export class CategoryEditComponent implements OnInit {
   ngOnInit() {
     this.category = new Category('');
     const categoryName = this.route.snapshot.params['categoryName'];
+   this.addSubscribers();
     this.getSingleCategory(categoryName);
   }
 
@@ -87,16 +100,19 @@ export class CategoryEditComponent implements OnInit {
         this.category = { ...category};
         this.oldCategory = { ...category};
         this.fileUrl = this.category.photo ? this.category.photo : AppConstants.getIconAddPhoto();
-        this.foodsSubscription = this.categoryService.foodsNameSubject.subscribe(
-          (foodsName: string[]) => {
-            this.category.foods = foodsName;
-          }
-        );
         this.categoryService.fetchFoodsNameFromCategory(categoryName);
         console.log('foods size from category : ' + this.category.foods.length);
       },
       (error) => {
         console.log('Impossible de récupérer la catégorie ' + categoryName);
+      }
+    );
+  }
+
+  private addSubscribers() {
+    this.foodsSubscription = this.categoryService.foodsNameSubject.subscribe(
+      (foodsName: string[]) => {
+        this.category.foods = foodsName;
       }
     );
   }

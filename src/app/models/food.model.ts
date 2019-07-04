@@ -5,8 +5,11 @@ export class Food {
   categoryName: string;
   chargeGlycemique: number;
   carboHydratPercent: number;
-  isFavorite: boolean;
+  favorite: boolean;
 
+  constructor(
+    public foodName: string, public glycemicIndex: number, public pralIndex: number) {
+    this.favorite = false;
+  }
 
-  constructor(public foodName: string, public glycemicIndex: number, public pralIndex: number) {}
 }
