@@ -2,7 +2,9 @@
   <mat-toolbar color="primary">
     <mat-toolbar-row>
       <span class="example-spacer">{{food.foodName}}</span>
-      <mat-icon class="example-icon">favorite</mat-icon>
+      <mat-icon class="red-icon">
+        <div *ngIf="food.favorite">favorite</div>
+      </mat-icon>
       <mat-icon class="example-icon" (click)="onDeleteFood(food)">delete</mat-icon>
     </mat-toolbar-row>
   </mat-toolbar>

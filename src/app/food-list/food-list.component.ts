@@ -31,6 +31,7 @@ export class FoodListComponent implements OnInit, OnDestroy {
   jsonFileSubscription: Subscription;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  chosenFoods: Food[] = [];
 
   constructor(private foodService: FoodService,
               private router: Router,
@@ -101,5 +102,16 @@ export class FoodListComponent implements OnInit, OnDestroy {
         this.foodService.updateFood(newFood, oldFood, false);
       }
     });
+  }
+
+  onFoodDrop(e: any) {
+    // Get the dropped data here
+    if (!this.chosenFoods.includes(e.dragData, 0)) {
+      this.chosenFoods.push(e.dragData);
+    }
+  }
+
+  onRemoveFood(index: number) {
+    (this.chosenFoods.splice(index,1));
   }
 }

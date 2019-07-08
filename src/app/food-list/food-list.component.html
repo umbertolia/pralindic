@@ -18,7 +18,7 @@
 
     <ng-container matColumnDef="favorite">
       <mat-header-cell *matHeaderCellDef mat-sort-header>  </mat-header-cell>
-      <mat-cell *matCellDef="let food; let i = index" (click)="$event.stopPropagation()"><mat-icon (click)="onFavorite(food);">
+      <mat-cell *matCellDef="let food; let i = index" (click)="$event.stopPropagation()"><mat-icon class="red-icon" (click)="onFavorite(food);">
         <div *ngIf="!food.favorite">favorite_border</div>
         <div *ngIf="food.favorite">favorite</div>
       </mat-icon>
@@ -43,3 +43,21 @@
 </div>
 
 
+<h3>Aliments</h3>
+<div class="row">
+  <div class="col-sm-3" flex style="overflow: scroll; height: 300px">
+    <ul class="list-group">
+      <li style="width: 50%" draggable *ngFor="let food of foods | keyvalue" [dragData]="food.value" dragScope="{{food.value.categoryName}}" class="list-group-item">{{food.value.foodName}}</li>
+    </ul>
+  </div>
+
+  <div class="col-sm-3">
+    <div class="panel panel-default" droppable (onDrop)="onFoodDrop($event)" [dropScope]="'Fruits'">
+      <div class="panel-heading" >Courses fruits</div>
+      <div class="panel-body">
+        <li *ngFor="let food of chosenFoods; let i = index" class="list-group-item" (click)="onRemoveFood(i)">{{food.foodName}}</li>
+      </div>
+    </div>
+  </div>
+
+</div>

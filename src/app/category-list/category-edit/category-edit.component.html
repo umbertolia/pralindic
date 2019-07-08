@@ -8,14 +8,14 @@
 
 <mat-card class="example-card">
   <mat-card-header>
-    <div mat-card-avatar [ngStyle]="getAvatarStyles()"></div>
+    <div mat-card-avatar [ngStyle]="commonService.getAvatarStyles(fileUrl)"></div>
     <mat-card-title>{{category.catName}}</mat-card-title>
     <mat-card-subtitle *ngIf="!category.foods">Aucun aliment associé</mat-card-subtitle>
     <mat-card-subtitle *ngIf="category.foods">{{category.foods.length}} Aliments associé</mat-card-subtitle>
 
   </mat-card-header>
   <div *ngIf="!category.photo">
-    <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" style="max-width: 100px">
+    <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" class="image_insert" >
     <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
   </div>
 
@@ -26,9 +26,13 @@
 
   <!-- liste des aliments -->
   <mat-card-content>
-    <div *ngFor="let foodName of category.foods" >
-      <app-food-edit [foodName]="foodName" [editionMode]="true"></app-food-edit>
-    </div>
+    <mat-grid-list cols="4">
+      <mat-grid-tile *ngFor="let foodName of category.foods">
+        <app-food-edit [foodName]="foodName" [editionMode]="true"></app-food-edit>
+      </mat-grid-tile>
+    </mat-grid-list>
+
+
   </mat-card-content>
 
   <mat-card-actions>
