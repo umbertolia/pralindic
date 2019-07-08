@@ -22,6 +22,7 @@ import {FoodService} from './services/food.service';
 import {CommonService} from './services/common.service';
 import {MaterialModule} from './common/material.module';
 import {AppConstants} from './common/constantes';
+import { NgDragDropModule } from 'ng-drag-drop';
 
 const appRoutes: Routes = [
   { path: 'auth/signup', component: SignupComponent },
@@ -57,7 +58,8 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
-    MaterialModule
+    MaterialModule,
+    NgDragDropModule.forRoot()
   ],
   providers: [AuthentificationService, AuthGuardService, CategoryService, FoodService, CommonService, AppConstants],
   bootstrap: [AppComponent]

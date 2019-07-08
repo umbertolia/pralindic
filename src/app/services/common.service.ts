@@ -62,4 +62,25 @@ export class CommonService {
     }
     return false;
   }
+
+  getAvatarStyles(fileUrl: string) {
+    const styles = {
+      'background-size': 'cover',
+      'background-image': 'url(' + fileUrl + ')'
+    };
+    return styles;
+  }
+
+  onSelectFiles(event: any, fileToUpload: File, fileUrl: string) {
+    if (event.target.files[0]) {
+      fileToUpload = event.target.files[0];
+      // image preview
+      const reader = new FileReader();
+      reader.onload = (evenemnt: any) => {
+        fileUrl = evenemnt.target.result;
+      };
+      reader.readAsDataURL(fileToUpload);
+    }
+    return (fileToUpload =  event.target.files[0]);
+  }
 }

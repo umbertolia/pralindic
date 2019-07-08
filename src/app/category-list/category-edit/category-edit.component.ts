@@ -1,4 +1,3 @@
-
 import {Component, NgModule, OnInit} from '@angular/core';
 import {Category} from '../../models/category.model';
 import {ActivatedRoute, Router} from '@angular/router';
@@ -52,7 +51,7 @@ export class CategoryEditComponent implements OnInit {
   }
 
   onSelectFiles(event) {
-    if (event.target.files[0]) {
+   /* if (event.target.files[0]) {
       this.fileToUpload = event.target.files[0];
       // image preview
       const reader = new FileReader();
@@ -61,7 +60,8 @@ export class CategoryEditComponent implements OnInit {
       };
       reader.readAsDataURL(this.fileToUpload);
     }
-    this.fileToUpload =  event.target.files[0];
+    this.fileToUpload =  event.target.files[0];*/
+   this.commonService.onSelectFiles(event, this.fileToUpload, this.fileUrl);
   }
 
   async valider() {
@@ -86,13 +86,7 @@ export class CategoryEditComponent implements OnInit {
       });
   }
 
-  getAvatarStyles() {
-    const styles = {
-      'background-size': 'cover',
-      'background-image': 'url(' + this.fileUrl + ')'
-    };
-    return styles;
-  }
+
 
   private getSingleCategory(categoryName: string) {
     this.categoryService.fetchSingleCategory(categoryName).then(
