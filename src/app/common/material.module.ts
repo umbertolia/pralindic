@@ -1,33 +1,37 @@
-// material.module.ts
-
 import { NgModule } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
-import {MatButtonModule, MatCardModule, MatIconModule, MatPaginatorModule, MatSortModule, MatToolbarModule} from '@angular/material';
+import {
+  MatTableModule, MatButtonModule, MatToolbarModule, MatIconModule, MatCardModule,
+  MatGridListModule, MatSortModule, MatPaginatorModule, MatListModule, MatTabsModule
+} from '@angular/material';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatGridListModule} from '@angular/material';
 
 @NgModule({
   imports: [
-    MatTableModule,
     BrowserAnimationsModule,
+    MatTableModule,
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
     MatGridListModule,
     MatSortModule,
-    MatPaginatorModule
-  ],
+    MatPaginatorModule,
+    MatListModule,
+    MatTabsModule
+
+],
   exports: [
-    MatTableModule,
     BrowserAnimationsModule,
+    MatTableModule,
     MatButtonModule,
     MatToolbarModule,
     MatIconModule,
     MatCardModule,
     MatGridListModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatListModule,
+    MatTabsModule
   ]
 })
 

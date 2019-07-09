@@ -7,6 +7,8 @@ import {MaterialModule} from '../common/material.module';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {CommonService} from '../services/common.service';
 import {AppConstants} from '../common/constantes';
+import {Category} from '../models/category.model';
+import {CategoryService} from '../services/category.service';
 
 @Component({
   selector: 'app-food-list',
@@ -31,23 +33,20 @@ export class FoodListComponent implements OnInit, OnDestroy {
   jsonFileSubscription: Subscription;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  chosenFoods: Food[] = [];
+  categoriesWithNewFoods = new Map<string, Food[]>();
+  foodsWithoutCategoty: Food[] = [];
+  categories: Map<string, Category>;
+  categoriesSubscription: Subscription;
+  categoryTabNameActivated: string;
 
-  constructor(private foodService: FoodService,
-              private router: Router,
+  constructor(private router: Router,
+              private foodService: FoodService,
+              private categoryService: CategoryService,
               private commonService: CommonService) { }
 
   ngOnInit() {
-    this.foodsSubscription = this.foodService.foodsSubject.subscribe(
-      (foodList: Map<string, Food>) => {
-        console.log('foodList size : ' + foodList.size);
-        this.foods = foodList;
-        this.dataSource = new MatTableDataSource(this.commonService.getArrayFromMap(this.foods));
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-      }
-    );
-    this.foodService.fetchFoods();
+    this.getFoods();
+    this.getCategories();
   }
 
   onNewFood() {
@@ -61,6 +60,7 @@ export class FoodListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.foodsSubscription.unsubscribe();
+    this.categoriesSubscription.unsubscribe();
     if (this.jsonFileSubscription) {
       this.jsonFileSubscription.unsubscribe();
     }
@@ -77,6 +77,34 @@ export class FoodListComponent implements OnInit, OnDestroy {
     this.getFoodsFromJson();
   }
 
+  getFoods() {
+    this.foodsSubscription = this.foodService.foodsSubject.subscribe(
+      (foodList: Map<string, Food>) => {
+        console.log('foodList size : ' + foodList.size);
+        this.foods = foodList;
+        this.dataSource = new MatTableDataSource(this.commonService.getArrayFromMap(this.foods));
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+        this.getFoodsWithoutCategoty();
+      }
+    );
+    this.foodService.fetchFoods();
+  }
+  getCategories() {
+    this.categoriesSubscription = this.categoryService.categoriesSubject.subscribe(
+      (categoryList: Map<string, Category>) => {
+        this.categories = categoryList;
+        categoryList.forEach( categ => {
+          this.categoriesWithNewFoods.set(categ.catName, []);
+        });
+        if (categoryList.size > 0) {
+          this.categoryTabNameActivated = categoryList.keys().next().value;
+          console.log('categoryTabNameActivated : ' + this.categoryTabNameActivated);
+        }
+      }
+    );
+    this.categoryService.fetchCategories();
+  }
   getFoodsFromJson(): Promise<any> {
     return new Promise<string>(resolve => {
       this.jsonFileSubscription = this.commonService.getJSON(AppConstants.getJsonFileLocation()).subscribe(data => {
@@ -104,14 +132,38 @@ export class FoodListComponent implements OnInit, OnDestroy {
     });
   }
 
-  onFoodDrop(e: any) {
-    // Get the dropped data here
-    if (!this.chosenFoods.includes(e.dragData, 0)) {
-      this.chosenFoods.push(e.dragData);
+  onCopyFood(food: Food) {
+
+    const indexFood = this.foodsWithoutCategoty.findIndex(
+      val => val.foodName === food.foodName
+    );
+    if (!this.categoriesWithNewFoods.get(this.categoryTabNameActivated).includes(food, 0)) {
+      this.categoriesWithNewFoods.get(this.categoryTabNameActivated).push(food);
+      this.foodsWithoutCategoty.splice(indexFood,  1);
+    }
+  }
+  onFoodDrop(e: any, categoryKeyName: string) {
+    if (!this.categoriesWithNewFoods.get(categoryKeyName).includes(e.dragData, 0)) {
+      this.categoriesWithNewFoods.get(categoryKeyName).push(e.dragData);
+      this.foodsWithoutCategoty.splice(e.dragData,  1);
     }
   }
 
-  onRemoveFood(index: number) {
-    (this.chosenFoods.splice(index,1));
+  onRemoveFood(food, categoryKeyName: string) {
+    this.categoriesWithNewFoods.get(categoryKeyName).splice(food, 1);
+    this.foodsWithoutCategoty.push(food);
+  }
+
+  getFoodsWithoutCategoty() {
+    this.foods.forEach(foodBase => {
+      if (!this.commonService.isNotNullOrEmpty(foodBase.categoryName)) {
+        this.foodsWithoutCategoty.push(foodBase);
+      }
+    });
+  }
+
+  setCategoryKeyName(catKey: string) {
+    this.categoryTabNameActivated = catKey;
+    console.log('categoryTabNameActivated : ' +  catKey);
   }
 }
