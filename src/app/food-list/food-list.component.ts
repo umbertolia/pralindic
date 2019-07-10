@@ -80,7 +80,6 @@ export class FoodListComponent implements OnInit, OnDestroy {
   getFoods() {
     this.foodsSubscription = this.foodService.foodsSubject.subscribe(
       (foodList: Map<string, Food>) => {
-        console.log('foodList size : ' + foodList.size);
         this.foods = foodList;
         this.dataSource = new MatTableDataSource(this.commonService.getArrayFromMap(this.foods));
         this.dataSource.sort = this.sort;
@@ -99,7 +98,6 @@ export class FoodListComponent implements OnInit, OnDestroy {
         });
         if (categoryList.size > 0) {
           this.categoryTabNameActivated = categoryList.keys().next().value;
-          console.log('categoryTabNameActivated : ' + this.categoryTabNameActivated);
         }
       }
     );
@@ -150,7 +148,10 @@ export class FoodListComponent implements OnInit, OnDestroy {
   }
 
   onRemoveFood(food, categoryKeyName: string) {
-    this.categoriesWithNewFoods.get(categoryKeyName).splice(food, 1);
+    const indexFood = this.categoriesWithNewFoods.get(categoryKeyName).findIndex(
+      val => val.foodName === food.foodName
+    );
+    this.categoriesWithNewFoods.get(categoryKeyName).splice(indexFood, 1);
     this.foodsWithoutCategoty.push(food);
   }
 
@@ -164,6 +165,5 @@ export class FoodListComponent implements OnInit, OnDestroy {
 
   setCategoryKeyName(catKey: string) {
     this.categoryTabNameActivated = catKey;
-    console.log('categoryTabNameActivated : ' +  catKey);
   }
 }

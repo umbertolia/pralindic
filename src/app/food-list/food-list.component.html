@@ -44,7 +44,7 @@
 
 
 <div class="row">
-  <h3>Aliments sans categorie</h3>
+  <h3>Sans categorie</h3>
   <div class="col-sm-3" flex style="overflow: scroll; height: 300px">
     <ul class="list-group">
       <li style="width: 50%" draggable *ngFor="let food of foodsWithoutCategoty" [dragData]="food" (click)="onCopyFood(food)"  class="list-group-item" >{{food.foodName}}</li>
