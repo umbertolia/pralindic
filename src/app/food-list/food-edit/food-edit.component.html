@@ -1,20 +1,17 @@
 <div style="margin: 5px">
-  <mat-toolbar color="primary">
-    <mat-toolbar-row>
-      <span class="example-spacer">{{food.foodName}}</span>
+  <mat-card>
+    <mat-card-header>
+      <div mat-card-avatar [ngStyle]="commonService.getAvatarStyles(fileUrl)">
+      </div>
+      <mat-card-subtitle>Indice Glyc. : {{food.glycemicIndex}}</mat-card-subtitle>
+      <mat-card-subtitle>Indice Pral : {{food.pralIndex}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
       <mat-icon class="red-icon">
         <div *ngIf="food.favorite">favorite</div>
       </mat-icon>
+      <mat-icon (click)="onEditFood(food)">edit</mat-icon>
       <mat-icon class="example-icon" (click)="onDeleteFood(food)">delete</mat-icon>
-    </mat-toolbar-row>
-  </mat-toolbar>
-
-  <mat-card>
-    <mat-card-title-group><img alt="photo" *ngIf="fileUrl" [src]="fileUrl" style="max-width: 100px"></mat-card-title-group>
-    <mat-card-content>
-      <div>IG : {{food.glycemicIndex}}</div>
-      <div>Pr : {{food.pralIndex}}</div>
     </mat-card-content>
   </mat-card>
-
 </div>

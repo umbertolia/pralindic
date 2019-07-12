@@ -66,7 +66,7 @@ export class FoodListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onRowClick(food: Food) {
+  onEditFood(food: Food) {
     const params = {};
     params['createMode'] = false;
     params['foodName'] = food.foodName;
@@ -131,7 +131,6 @@ export class FoodListComponent implements OnInit, OnDestroy {
   }
 
   onCopyFood(food: Food) {
-
     const indexFood = this.foodsWithoutCategoty.findIndex(
       val => val.foodName === food.foodName
     );
@@ -141,9 +140,12 @@ export class FoodListComponent implements OnInit, OnDestroy {
     }
   }
   onFoodDrop(e: any, categoryKeyName: string) {
+    const indexFood = this.foodsWithoutCategoty.findIndex(
+      val => val.foodName === e.foodName
+    );
     if (!this.categoriesWithNewFoods.get(categoryKeyName).includes(e.dragData, 0)) {
       this.categoriesWithNewFoods.get(categoryKeyName).push(e.dragData);
-      this.foodsWithoutCategoty.splice(e.dragData,  1);
+      this.foodsWithoutCategoty.splice(indexFood,  1);
     }
   }
 

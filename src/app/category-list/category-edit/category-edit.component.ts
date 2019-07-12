@@ -31,6 +31,9 @@ export class CategoryEditComponent implements OnInit {
   fileToUpload: File = null;
   foodsSubscription: Subscription;
   oldCategory: Category;
+  panelOpenState = false;
+  messages: boolean[] = [];
+
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -42,8 +45,9 @@ export class CategoryEditComponent implements OnInit {
   ngOnInit() {
     this.category = new Category('');
     const categoryName = this.route.snapshot.params['categoryName'];
-   this.addSubscribers();
+    this.addSubscribers();
     this.getSingleCategory(categoryName);
+    this.fileUrl = AppConstants.getIconAddPhoto();
   }
 
   onPrevious() {
@@ -51,18 +55,25 @@ export class CategoryEditComponent implements OnInit {
   }
 
   onSelectFiles(event) {
-   /* if (event.target.files[0]) {
+    console.log('fileUrl : ' + this.fileUrl);
+    if (event.target.files[0]) {
       this.fileToUpload = event.target.files[0];
       // image preview
       const reader = new FileReader();
-      reader.onload = (evenemnt: any) => {
-        this.fileUrl = evenemnt.target.result;
-      };
       reader.readAsDataURL(this.fileToUpload);
+      reader.onload = (evenemnt: any) => {
+         this.fileUrl = reader.result;
+      };
     }
-    this.fileToUpload =  event.target.files[0];*/
-   this.commonService.onSelectFiles(event, this.fileToUpload, this.fileUrl);
+    console.log('fileUrl : ' + this.fileUrl);
   }
+
+
+ /* onSelectFiles(event) {
+    console.log('fileUrl : ' + this.fileUrl);
+   this.commonService.onSelectFiles(event, this.fileToUpload, this.fileUrl);
+   console.log('fileUrl : ' + this.fileUrl);
+  }*/
 
   async valider() {
     let newPhotoUploaded: boolean;
@@ -109,5 +120,13 @@ export class CategoryEditComponent implements OnInit {
         this.category.foods = foodsName;
       }
     );
+  }
+
+  showMessage(index: number) {
+    this.messages[index] = true;
+  }
+
+  hideMessage(index: number) {
+    this.messages[index] = false;
   }
 }

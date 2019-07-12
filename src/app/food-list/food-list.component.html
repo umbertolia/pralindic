@@ -31,7 +31,7 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClick(row)"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onEditFood(row)"></mat-row>
 
   </mat-table>
   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
