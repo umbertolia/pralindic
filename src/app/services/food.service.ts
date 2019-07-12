@@ -55,7 +55,7 @@ export class FoodService {
               console.log('erreur sur updateChildNameAndCategoryFoodName()' + reason);
             }
         );
-        if (oldFood.photo) {
+        if (newPhotoUploaded && oldFood.photo) {
           // suppr de l'ancienne image
           const refImage = firebase.storage().refFromURL(oldFood.photo);
           refImage.delete().then(

@@ -1,25 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 
-.example-icon {
-  padding: 0 14px;
+.delete-icon {
+  padding: 0 20px;
 }
 
 .example-spacer {
   flex: 1 1 auto;
 }
 
-
-.header_image_class {
-    background-size: cover;
-  color: red;
-  background-image: url("assets/images/icon_remove.png");
-}
-
 .red-icon {
   color:  red;
 }
 
-.image_insert {
-  width: 5%;
+
+.images_big {
+  width:200px;
+  height: 200px;
 }

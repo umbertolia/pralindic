@@ -31,7 +31,7 @@
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onRowClick(row)"></mat-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns" (click)="onEditFood(row)"></mat-row>
 
   </mat-table>
   <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
@@ -43,21 +43,35 @@
 </div>
 
 
-<h3>Aliments</h3>
 <div class="row">
+  <h3>Sans categorie</h3>
+  <h5>(faire glisser ou cliquer pour inserer dans une catégorie)</h5>
   <div class="col-sm-3" flex style="overflow: scroll; height: 300px">
     <ul class="list-group">
-      <li style="width: 50%" draggable *ngFor="let food of foods | keyvalue" [dragData]="food.value" dragScope="{{food.value.categoryName}}" class="list-group-item">{{food.value.foodName}}</li>
+      <li style="width: 50%" draggable *ngFor="let food of foodsWithoutCategoty" [dragData]="food" (click)="onCopyFood(food)"  class="list-group-item" >{{food.foodName}}</li>
     </ul>
   </div>
 
-  <div class="col-sm-3">
-    <div class="panel panel-default" droppable (onDrop)="onFoodDrop($event)" [dropScope]="'Fruits'">
-      <div class="panel-heading" >Courses fruits</div>
-      <div class="panel-body">
-        <li *ngFor="let food of chosenFoods; let i = index" class="list-group-item" (click)="onRemoveFood(i)">{{food.foodName}}</li>
+
+  <mat-tab-group>
+    <mat-tab *ngFor="let category of categories| keyvalue" >
+      <ng-template mat-tab-label>
+        <div (click)="setCategoryKeyName(category.key)" >
+          <mat-icon class="example-tab-icon" (click)="setCategoryKeyName(category.key)">list</mat-icon>
+          <span [style.color]=" categoryTabNameActivated === category.key ? 'red' : 'black' " >{{category.value.catName}}</span>
+        </div>
+      </ng-template>
+
+      <div class="col-sm-3">
+        <div class="panel panel-default" droppable  (onDrop)="onFoodDrop($event, category.key)">
+          <div class="panel-body">
+            <li *ngFor="let food of categoriesWithNewFoods.get(category.value.catName)" class="list-group-item" (click)="onRemoveFood(food, category.key)">{{food.foodName}}</li>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
+
+    </mat-tab>
+  </mat-tab-group>
 
 </div>
+

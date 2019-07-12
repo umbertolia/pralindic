@@ -2,38 +2,35 @@
   <mat-toolbar-row>
     <span>{{category.catName}}</span>
     <span class="example-spacer"></span>
-    <mat-icon class="example-icon" >delete</mat-icon>
+    <mat-icon class="delete-icon" >delete</mat-icon>
   </mat-toolbar-row>
 </mat-toolbar>
 
 <mat-card class="example-card">
   <mat-card-header>
-    <div mat-card-avatar [ngStyle]="commonService.getAvatarStyles(fileUrl)"></div>
-    <mat-card-title>{{category.catName}}</mat-card-title>
     <mat-card-subtitle *ngIf="!category.foods">Aucun aliment associé</mat-card-subtitle>
-    <mat-card-subtitle *ngIf="category.foods">{{category.foods.length}} Aliments associé</mat-card-subtitle>
-
   </mat-card-header>
-  <div *ngIf="!category.photo">
-    <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" class="image_insert" >
-    <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
-  </div>
 
-  <div *ngIf="category.photo">
-    <img style="max-width: 100px" [src]="fileUrl" (click)="changeImage.click()" />
-    <input #changeImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
+  <div>
+    <img (click)="selectImage.click()" *ngIf="fileUrl" [src]="fileUrl" class="images_big">
+    <input #selectImage (change)="onSelectFiles($event)" style="display:none;" type="file" />
   </div>
 
   <!-- liste des aliments -->
-  <mat-card-content>
-    <mat-grid-list cols="4">
-      <mat-grid-tile *ngFor="let foodName of category.foods">
-        <app-food-edit [foodName]="foodName" [editionMode]="true"></app-food-edit>
-      </mat-grid-tile>
-    </mat-grid-list>
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let foodName of category.foods; let i = index;" (mouseover)="showMessage(i);" (mouseleave)="hideMessage(i)"  >
+      <mat-expansion-panel-header>
+        <mat-panel-title [style.color]="messages[i] ? 'red' : 'black'">
+         {{foodName}}
+        </mat-panel-title>
+        <mat-panel-description *ngIf="messages[i]" >
+          cliquer pour la description de {{foodName}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <app-food-edit [foodName]="foodName" [editionMode]="true"></app-food-edit>
+    </mat-expansion-panel>
+  </mat-accordion>
 
-
-  </mat-card-content>
 
   <mat-card-actions>
     <button mat-raised-button color="accent" (click)="valider()">save</button>

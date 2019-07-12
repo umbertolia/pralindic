@@ -17,7 +17,6 @@ export class FoodEditComponent implements OnInit {
 
   food: Food;
   fileUrl: string;
-  fileToUpload: File = null;
   oldFood: Food;
   @Input() foodName;
   @Input() editionMode = true;
@@ -40,55 +39,6 @@ export class FoodEditComponent implements OnInit {
     }
   }
 
-  onPrevious() {
-    this.router.navigate(['/foods']);
-  }
-
-  onSelectFiles(event) {
-    if (event.target.files[0]) {
-      this.fileToUpload = event.target.files[0];
-      // image preview
-      const reader = new FileReader();
-      reader.onload = (evenemnt: any) => {
-        this.fileUrl = evenemnt.target.result;
-      };
-      reader.readAsDataURL(this.fileToUpload);
-    }
-    this.fileToUpload =  event.target.files[0];
-  }
-
-  async valider() {
-    let newPhotoUploaded: boolean;
-    if (this.fileToUpload) {
-      await this.uploadFile(this.fileToUpload);
-      newPhotoUploaded = true;
-    }
-    if (this.fileUrl && this.fileUrl.length > 0) {
-      this.food.photo = this.fileUrl;
-    }
-    if (!deepEqual(this.food, this.oldFood)) {
-      const result = this.foodService.updateFood(this.food, this.oldFood, newPhotoUploaded);
-
-      console.log('retour de l\'update : ' + result);
-      this.router.navigate(['/foods']);
-    }
-  }
-
-  async uploadFile(file: File) {
-    await this.commonService.uploadFile(file, this.food.constructor.name.concat('_').concat(this.food.foodName)).then(
-      (url: string) => {
-        this.fileUrl = url;
-      });
-  }
-
-  getAvatarStyles() {
-    const styles = {
-      'background-size': 'cover',
-      'background-image': 'url(' + this.fileUrl + ')'
-    };
-    return styles;
-  }
-
   private getSingleFood(foodName: string) {
     this.foodService.fetchSingleFood(foodName).then(
       (foodBase: Food) => {
@@ -97,9 +47,16 @@ export class FoodEditComponent implements OnInit {
         this.fileUrl = this.food.photo ? this.food.photo : AppConstants.getIconAddPhoto();
       },
       (error) => {
-        console.log('Impossible de récupérer l\'aliment ' + foodName + 'erreur : ' + error);
+        console.log('Impossib le de récupérer l\'aliment ' + foodName + 'erreur : ' + error);
       }
     );
+  }
+
+  onEditFood(food: Food) {
+    const params = {};
+    params['createMode'] = false;
+    params['foodName'] = food.foodName;
+    this.router.navigate(['/foods', 'new'], {queryParams : params });
   }
 
   onDeleteFood(food: Food) {
