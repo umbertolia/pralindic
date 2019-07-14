@@ -29,13 +29,22 @@ export class CategoryService {
 
   updateCategorie(newCategory: Category, oldCategory: Category, newPhotoUploaded: boolean) {
     console.log('service updateCategorie');
-    const updates = {};
-    updates['catName'] = newCategory.catName;
-    if (newPhotoUploaded && newCategory.photo) {
-      updates['photo'] = newCategory.photo;
-    }
-    return new Promise(
-      () => {
+    return new Promise(resolve => {
+      if (newCategory.catName !== oldCategory.catName) {
+        this.createNewCategory(newCategory);
+        this.deleteSingleCategory(oldCategory, false);
+        // on met à jour le nom de categeorie pour chaque aliment associé
+        newCategory.foods.forEach((foodName) => {
+          const updateCatName = {};
+          updateCatName['categoryName'] = newCategory.catName;
+          firebase.database().ref('/foods/').child(foodName).update(updateCatName);
+        });
+      } else {
+        const updates = {};
+        updates['catName'] = newCategory.catName;
+        if (newPhotoUploaded && newCategory.photo) {
+          updates['photo'] = newCategory.photo;
+        }
         firebase.database().ref('/categories/').child(newCategory.catName).update(updates).then(
           value => {
             console.log('mise a jour de ' + newCategory.catName);
@@ -44,21 +53,11 @@ export class CategoryService {
             console.log('erreur sur l\'update' + erreur);
           }
         );
-        if (oldCategory.photo) {
-          // suppr de l'ancienne image
-          const refImage = firebase.storage().refFromURL(oldCategory.photo);
-          refImage.delete().then(
-            () => {
-              console.log('ancienne photo supprimée');
-            }
-          ).catch(
-            (erreur) => {
-              console.log('erreur lors de la suppression, de l\'ancienne photo' + erreur);
-            }
-          );
-        }
+        this.commonService.deletePhoto(newPhotoUploaded, oldCategory.photo);
       }
-    );
+      resolve(true);
+    });
+    this.emitCategories();
   }
 
   addFoodToCategory(newFood: Food, oldFood: Food): Promise<boolean> {
@@ -132,18 +131,16 @@ export class CategoryService {
     console.log('service createNewCategory');
     return new Promise(resolve => {
       this.categories.set(category.catName, category);
-      firebase.database().ref('/categories/').child(category.catName).set(category).then(
-        value => {
-          resolve(true);
-        } );
+      firebase.database().ref('/categories/').child(category.catName).set(category);
+      resolve(true);
       this.emitCategories();
     });
   }
 
-  deleteSingleCategory(category: Category): Promise<boolean> {
+  deleteSingleCategory(category: Category, deletePhoto: boolean): Promise<boolean> {
     console.log('service deleteSingleCategory');
     return new Promise(resolve => {
-        if (category.photo) {
+        if (deletePhoto && category.photo) {
           console.log('category.photo : ' + category.photo);
           const refImage = firebase.storage().refFromURL(category.photo);
           refImage.delete().then(
@@ -170,7 +167,6 @@ export class CategoryService {
     const foodListName = [];
     firebase.database().ref('/categories/').child(categoryName).child('/foods/').once(
       'value', (data) => {
-        console.log('data.val : ' + data.val());
         data.forEach(function (elmt) {
           foodListName.push(elmt.val());
         });
@@ -189,5 +185,7 @@ export class CategoryService {
       this.emitFoodsName();
     }
   }
+
+
 
 }

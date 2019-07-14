@@ -41,7 +41,7 @@ export class CategoryListComponent implements OnInit, OnDestroy {
   }
 
   onDeleteCategory(category: Category) {
-    this.categoryService.deleteSingleCategory(category).then(
+    this.categoryService.deleteSingleCategory(category, true).then(
       (catDeleted: boolean) => {
         if (catDeleted && category.foods) {
           // on supprime son nom pour chaque aliment associé

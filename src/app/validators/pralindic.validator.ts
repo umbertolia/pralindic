@@ -2,20 +2,21 @@ import {Category} from '../models/category.model';
 import {AbstractControl, ValidatorFn} from '@angular/forms';
 import {Food} from '../models/food.model';
 
-export function chechCategoryName(listeCat: Map<string, Category>): ValidatorFn {
-  return (control: AbstractControl): { [key: string]: any } | null => {
-    const catName = control.value;
-    let catExists: boolean;
-    if (!catName.toString().isEmpty && listeCat) {
-      listeCat.forEach((value: Category, key: string) => {
-        console.log(key, value);
-        if (value.catName === catName) {
-          return (catExists = true);
-        }
-      });
-      return catExists ? {forbiddenNameCat: true} : null;
-    }
-  };
+export function chechCategoryName(listeCat: Map<string, Category>, createMode): ValidatorFn {
+  if (createMode) {
+    return (control: AbstractControl): { [key: string]: any } | null => {
+      const catName = control.value;
+      let catExists: boolean;
+      if (!catName.toString().isEmpty && listeCat) {
+        listeCat.forEach((value: Category, key: string) => {
+          if (value.catName === catName) {
+            return (catExists = true);
+          }
+        });
+        return catExists ? {forbiddenNameCat: true} : null;
+      }
+    };
+  }
 }
 
 export function chechFoodName(foods: Food[], createMode): ValidatorFn {

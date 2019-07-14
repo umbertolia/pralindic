@@ -4,6 +4,7 @@ import * as firebase from 'firebase';
 import {Subject} from 'rxjs';
 import {Food} from '../models/food.model';
 import {CategoryService} from './category.service';
+import {CommonService} from './common.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class FoodService {
   private foods = new Map<string, Food>();
   foodsSubject = new Subject<Map<string, Food>>();
 
-  constructor(private categoryService: CategoryService) { }
+  constructor(private categoryService: CategoryService, private commonService: CommonService) { }
 
   emitFoods() {
     this.foodsSubject.next(this.foods);
@@ -26,7 +27,7 @@ export class FoodService {
     updates['pralIndex'] = newFood.pralIndex;
     updates['favorite'] = newFood.favorite;
 
-    if (newFood.categoryName) {
+    if (newFood.categoryName || newFood.categoryName === '') {
       updates['categoryName'] = newFood.categoryName;
     }
     if (newPhotoUploaded && newFood.photo) {
@@ -86,17 +87,19 @@ export class FoodService {
     });
   }
 
-  fetchFoods() {
+  fetchFoods(): Promise<boolean> {
     const mapLocal = new Map<string, Food>();
-    firebase.database().ref('/foods').on(
-      'value', (data) => {
-        data.forEach(entry => {
-          mapLocal.set(entry.key, entry.val() as Food);
+    return new Promise(resolve => {
+      firebase.database().ref('/foods').on(
+        'value', (data) => {
+          data.forEach(entry => {
+            mapLocal.set(entry.key, entry.val() as Food);
+          });
+          this.foods = mapLocal;
+          this.emitFoods();
+          resolve(true);
         });
-        this.foods = mapLocal;
-        this.emitFoods();
-      }
-    );
+    });
   }
 
 
@@ -129,19 +132,7 @@ export class FoodService {
   deleteSingleFood(food: Food): Promise<boolean> {
     console.log('service deleteSingleFood');
     return new Promise(resolve => {
-      if (food.photo) {
-        console.log('food.photo : ' + food.photo);
-        const refImage = firebase.storage().refFromURL(food.photo);
-        refImage.delete().then(
-          () => {
-            console.log('photo supprimée');
-          }
-        ).catch(
-          (erreur) => {
-            console.log('erreur lors de la suppression, de la photo' + erreur);
-          }
-        );
-      }
+      this.commonService.deletePhoto(true, food.photo);
       let deleted = false;
       firebase.database().ref('/foods').child(food.foodName).remove().then(
         value => {
