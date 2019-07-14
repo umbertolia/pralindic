@@ -2,5 +2,25 @@
 
   <button mat-fab color="accent" ><mat-icon>add_shopping_cart</mat-icon></button>
 
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let category of categories | keyvalue"
+                         (opened)="panelsOpened.set(category.key, true)"
+                         (closed)="panelsOpened.set(category.key, false)" [disabled]="!category.value.foods">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{category.value.catName}}  <img [alt]="category.value.catName" class="images_small"  [src]="category.value.photo" >
+        </mat-panel-title>
+        <mat-panel-description>
+          {{panelsOpened.get(category.key) ? 'ouvert' :
+          category.value.foods && category.value.foods.length > 0 ? 'choisir les aliments' : 'aucun aliment'}}
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+      <mat-selection-list #foods (selectionChange)="managerFoodsCard()" [(ngModel)]="selectedFoods">
+        <mat-list-option *ngFor="let food of category.value.foods" >
+          {{food}}
+        </mat-list-option>
+      </mat-selection-list>
 
+    </mat-expansion-panel>
+</mat-accordion>
 </p>
