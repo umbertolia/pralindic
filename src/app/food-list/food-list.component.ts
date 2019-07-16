@@ -1,9 +1,8 @@
-import {Component, OnDestroy, OnInit, NgModule, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Food} from '../models/food.model';
 import {Router} from '@angular/router';
 import {FoodService} from '../services/food.service';
-import {MaterialModule} from '../common/material.module';
 import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
 import {CommonService} from '../services/common.service';
 import {AppConstants} from '../common/constantes';
@@ -16,14 +15,7 @@ import {CategoryService} from '../services/category.service';
   styleUrls: ['./food-list.component.scss']
 })
 
-@NgModule({
-  imports: [
-    MaterialModule
-  ],
-  exports: [
-    MaterialModule
-  ]
-})
+
 export class FoodListComponent implements OnInit, OnDestroy {
 
   foods: Map<string, Food>;
@@ -55,6 +47,16 @@ export class FoodListComponent implements OnInit, OnDestroy {
 
   onDeleteFood(food: Food) {
     this.foodService.deleteSingleFood(food);
+    if (this.foodsWithoutCategoty.includes(food)) {
+      this.foodsWithoutCategoty =  this.foodsWithoutCategoty.filter(
+        (value: Food)  => value !== food);
+    } else {
+      this.categoriesWithNewFoods.forEach((tab: Food[], key) => {
+        if (tab.includes(food)) {
+         this.categoriesWithNewFoods.set(key, tab.filter(oneFood => oneFood !== food));
+        }
+      });
+    }
   }
 
 
@@ -84,10 +86,15 @@ export class FoodListComponent implements OnInit, OnDestroy {
         this.dataSource = new MatTableDataSource(this.commonService.getArrayFromMap(this.foods));
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
-        this.getFoodsWithoutCategoty();
       }
     );
-    this.foodService.fetchFoods();
+    this.foodService.fetchFoods().then(
+      (queryOK: boolean) => {
+        if (queryOK) {
+          this.getFoodsWithoutCategoty();
+        }
+      });
+
   }
   getCategories() {
     this.categoriesSubscription = this.categoryService.categoriesSubject.subscribe(

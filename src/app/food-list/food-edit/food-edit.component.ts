@@ -5,7 +5,6 @@ import {CommonService} from '../../services/common.service';
 import {FoodService} from '../../services/food.service';
 import {AppConstants} from '../../common/constantes';
 import {CategoryEditComponent} from '../../category-list/category-edit/category-edit.component';
-import * as deepEqual from 'deep-equal';
 
 @Component({
   selector: 'app-food-edit',
@@ -29,7 +28,6 @@ export class FoodEditComponent implements OnInit {
 
   ngOnInit() {
     this.food = new Food('', 0, 0);
-
     if (this.route.component === CategoryEditComponent && Boolean(this.foodName)) {
         console.log('appel depuis le composant CategoryEditComponent');
         this.getSingleFood(this.foodName);

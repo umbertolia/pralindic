@@ -1,6 +1,7 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
     <span>{{category.catName}}</span>
+    <mat-icon class="edit" (click)="onEditCategory(category)" >edit</mat-icon>
     <span class="example-spacer"></span>
     <mat-icon class="delete-icon" >delete</mat-icon>
   </mat-toolbar-row>
@@ -37,6 +38,5 @@
     <button mat-raised-button color="accent" (click)="onPrevious()">back</button>
   </mat-card-actions>
 </mat-card>
-
 
 

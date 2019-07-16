@@ -39,12 +39,10 @@ export class FoodFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.initForm();
-    this.getFood();
+    this.getFoodFromRoute();
     this.getCategoriesList();
     this.getFoods();
-
-
+    this.initForm();
   }
 
   initForm() {
@@ -137,8 +135,8 @@ export class FoodFormComponent implements OnInit {
     this.foodService.fetchFoods();
   }
 
-  getFood() {
-    this.getOptionalParams().then((params: Map<string, string>) => {
+  getFoodFromRoute() {
+    this.getOptionalParamsFromRoute().then((params: Map<string, string>) => {
       if (params != null && params.size > 0) {
         this.foodService.fetchSingleFood(params.get('foodName')).then((foodBase: Food) => {
           this.currentFood = foodBase != null ?  { ...foodBase} :  new Food('', 0, 0);
@@ -156,7 +154,7 @@ export class FoodFormComponent implements OnInit {
     });
   }
 
-  getOptionalParams(): Promise<Map<string, Object>> {
+  getOptionalParamsFromRoute(): Promise<Map<string, Object>> {
     const params = new Map;
     return  new Promise(resolve => {
       this.route.queryParamMap.subscribe(queryParams => {

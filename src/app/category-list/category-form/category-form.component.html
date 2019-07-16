@@ -1,18 +1,27 @@
 <div class="row">
   <div class="col-sm-8 col-sm-offset-2">
-    <h2>Créer une catégorie</h2>
+    <h2 *ngIf="createMode">Nouvelle catégorie</h2>
+    <h2 *ngIf="!createMode" >Modification catégorie</h2>
+
     <form [formGroup]="categorieForm" (ngSubmit)="onSubmit()">
       <div class="form-group">
       <label for="name">Nom</label>
-      <input type="text" id="name" class="form-control" formControlName="name">
-        <p class="alert alert-info" *ngIf="categorieForm.controls['name'].hasError('forbiddenNameCat')">La catégorie existe déja !</p>
+      <input [ngModel]="currentCategory.catName" type="text" id="name" class="form-control" formControlName="name">
+        <div *ngIf="createMode && categorieForm.controls['name'].errors && categorieForm.controls['name'].value">
+          <p *ngIf="categorieForm.controls['name'].hasError('forbiddenNameCat'); else commonNameError" class="alert alert-info"> La catégorie existe déja !</p>
+          <ng-template #commonNameError>
+            <p class="alert alert-info">Erreur sur le nom</p>
+          </ng-template>
       </div>
+      </div>
+
       <div>
         <img *ngIf="fileUrl" [src]="fileUrl" (click)="selectImage.click()" style="max-width: 100px">
         <input #selectImage type="file" (change)="onSelectFiles($event)" style="display:none;" />
       </div>
         <p class="text-success" *ngIf="fileUploaded">Fichier chargé</p>
-      <button class="btn btn-success" type="submit" [disabled]="categorieForm.invalid || fileIsUploading">Créer</button>
+      <button *ngIf="createMode" [disabled]="categorieForm.invalid" class="btn btn-success" type="submit" >Créer</button>
+      <button *ngIf="!createMode" [disabled]="categorieForm.controls['name'].setValidators(null) && categorieForm.invalid" class="btn btn-success" type="submit">Modifier</button>
     </form>
     <p class="text-danger">{{errorMessage}}</p>
   </div>

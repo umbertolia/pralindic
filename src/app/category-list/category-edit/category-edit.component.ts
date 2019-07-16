@@ -1,4 +1,4 @@
-import {Component, NgModule, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Category} from '../../models/category.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {CategoryService} from '../../services/category.service';
@@ -6,7 +6,6 @@ import {CommonService} from '../../services/common.service';
 import {AppConstants} from '../../common/constantes';
 import {Subscription} from 'rxjs';
 import * as deepEqual from 'deep-equal';
-import {MaterialModule} from '../../common/material.module';
 
 
 @Component({
@@ -15,14 +14,6 @@ import {MaterialModule} from '../../common/material.module';
   styleUrls: ['./category-edit.component.scss']
 })
 
-@NgModule({
-  imports: [
-    MaterialModule
-  ],
-  exports: [
-    MaterialModule
-  ]
-})
 
 export class CategoryEditComponent implements OnInit {
 
@@ -31,7 +22,6 @@ export class CategoryEditComponent implements OnInit {
   fileToUpload: File = null;
   foodsSubscription: Subscription;
   oldCategory: Category;
-  panelOpenState = false;
   messages: boolean[] = [];
 
 
@@ -114,6 +104,13 @@ export class CategoryEditComponent implements OnInit {
     );
   }
 
+  onEditCategory(category: Category) {
+    const params = {};
+    params['createMode'] = false;
+    params['categoryName'] = category.catName;
+    this.router.navigate(['/categories', 'new'], {queryParams : params });
+  }
+
   private addSubscribers() {
     this.foodsSubscription = this.categoryService.foodsNameSubject.subscribe(
       (foodsName: string[]) => {
@@ -129,4 +126,6 @@ export class CategoryEditComponent implements OnInit {
   hideMessage(index: number) {
     this.messages[index] = false;
   }
+
+
 }

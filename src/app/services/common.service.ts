@@ -12,7 +12,7 @@ export class CommonService {
 
   constructor(private httpClient: HttpClient) {  }
 
-  public getJSON(url: string): Observable<any> {
+  getJSON(url: string): Observable<any> {
     return this.httpClient.get(url);
   }
 
@@ -40,7 +40,7 @@ export class CommonService {
     );
   }
 
-  public isAbstractControlNotEmpty(control: AbstractControl): boolean {
+  isAbstractControlNotEmpty(control: AbstractControl): boolean {
     if (control != null && control.value !== '') {
         return true;
     }
@@ -50,7 +50,6 @@ export class CommonService {
   public getArrayFromMap(myMap: Map<string, Object>) {
     const array = [];
     myMap.forEach((value: Food, key: string) => {
-      console.log(key, value);
       array.push(value);
     });
     return array;
@@ -71,7 +70,19 @@ export class CommonService {
     return styles;
   }
 
-
+  deletePhoto(newPhotoUploaded: boolean, urlPhotoToDelete: string) {
+    if (newPhotoUploaded && urlPhotoToDelete) {
+      // suppr de l'ancienne image
+      const refImage = firebase.storage().refFromURL(urlPhotoToDelete);
+      refImage.delete().then(
+        () => {
+          console.log('ancienne photo supprimée');
+        }
+      ).catch(
+        (erreur) => {
+          console.log('erreur lors de la suppression, de l\'ancienne photo' + erreur);
+        }
+      );
+    }
+  }
 }
-
-
