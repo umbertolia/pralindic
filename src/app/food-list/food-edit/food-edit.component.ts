@@ -4,7 +4,6 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {CommonService} from '../../services/common.service';
 import {FoodService} from '../../services/food.service';
 import {AppConstants} from '../../common/constantes';
-import {CategoryEditComponent} from '../../category-list/category-edit/category-edit.component';
 
 @Component({
   selector: 'app-food-edit',
@@ -19,6 +18,7 @@ export class FoodEditComponent implements OnInit {
   oldFood: Food;
   @Input() foodName;
   @Input() editionMode = true;
+  @Input() componentName: string;
 
   constructor(private route: ActivatedRoute,
               private router: Router,
@@ -28,8 +28,7 @@ export class FoodEditComponent implements OnInit {
 
   ngOnInit() {
     this.food = new Food('', 0, 0);
-    if (this.route.component === CategoryEditComponent && Boolean(this.foodName)) {
-        console.log('appel depuis le composant CategoryEditComponent');
+    if (this.route.component !== this.componentName && Boolean(this.foodName)) {
         this.getSingleFood(this.foodName);
     } else {
       const foodName = this.route.snapshot.params['foodName'];

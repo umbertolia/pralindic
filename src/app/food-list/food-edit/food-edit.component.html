@@ -3,10 +3,10 @@
     <mat-card-header>
       <div mat-card-avatar [ngStyle]="commonService.getAvatarStyles(fileUrl)">
       </div>
-      <mat-card-subtitle>Indice Glyc. : {{food.glycemicIndex}}</mat-card-subtitle>
-      <mat-card-subtitle>Indice Pral : {{food.pralIndex}}</mat-card-subtitle>
+      <mat-card-subtitle *ngIf="editionMode">Indice Glyc. : {{food.glycemicIndex}}</mat-card-subtitle>
+      <mat-card-subtitle *ngIf="editionMode">Indice Pral : {{food.pralIndex}}</mat-card-subtitle>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content *ngIf="editionMode">
       <mat-icon class="red-icon">
         <div *ngIf="food.favorite">favorite</div>
       </mat-icon>

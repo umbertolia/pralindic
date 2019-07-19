@@ -55,9 +55,9 @@ export class CategoryService {
         );
         this.commonService.deletePhoto(newPhotoUploaded, oldCategory.photo);
       }
+      this.emitCategories();
       resolve(true);
     });
-    this.emitCategories();
   }
 
   addFoodToCategory(newFood: Food, oldFood: Food): Promise<boolean> {
@@ -103,7 +103,7 @@ export class CategoryService {
         data.forEach(entry => {
           mapLocal.set(entry.key, entry.val() as Category);
         });
-        this.categories = mapLocal;
+        this.categories = this.commonService.sortMap(mapLocal, Category.name);
         this.emitCategories();
       }
     );

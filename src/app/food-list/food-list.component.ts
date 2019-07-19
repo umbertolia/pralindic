@@ -84,7 +84,7 @@ export class FoodListComponent implements OnInit, OnDestroy {
       (foodList: Map<string, Food>) => {
         this.foods = foodList;
         this.dataSource = new MatTableDataSource(this.commonService.getArrayFromMap(this.foods));
-        this.dataSource.sort = this.sort;
+        // this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
       }
     );

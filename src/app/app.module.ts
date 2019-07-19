@@ -23,6 +23,7 @@ import {CommonService} from './services/common.service';
 import {MaterialModule} from './common/material.module';
 import {AppConstants} from './common/constantes';
 import { NgDragDropModule } from 'ng-drag-drop';
+import {MatChipsModule} from '@angular/material';
 
 const appRoutes: Routes = [
   { path: 'auth/signup', component: SignupComponent },
@@ -59,7 +60,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     RouterModule.forRoot(appRoutes),
     MaterialModule,
-    NgDragDropModule.forRoot()
+    NgDragDropModule.forRoot(),
+    MatChipsModule
   ],
   providers: [AuthentificationService, AuthGuardService, CategoryService, FoodService, CommonService, AppConstants],
   bootstrap: [AppComponent]

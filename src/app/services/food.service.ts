@@ -95,7 +95,7 @@ export class FoodService {
           data.forEach(entry => {
             mapLocal.set(entry.key, entry.val() as Food);
           });
-          this.foods = mapLocal;
+          this.foods =  this.commonService.sortMap(mapLocal, Food.name);
           this.emitFoods();
           resolve(true);
         });

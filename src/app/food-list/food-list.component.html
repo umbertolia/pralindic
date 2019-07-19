@@ -54,7 +54,7 @@
 
 
   <mat-tab-group>
-    <mat-tab *ngFor="let category of categories| keyvalue" >
+    <mat-tab *ngFor="let category of categories| keyvalue: commonService.indexOrderByFoodsNumber">
       <ng-template mat-tab-label>
         <div (click)="setCategoryKeyName(category.key)" >
           <mat-icon class="example-tab-icon" (click)="setCategoryKeyName(category.key)">list</mat-icon>

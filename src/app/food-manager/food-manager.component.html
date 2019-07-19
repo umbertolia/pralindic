@@ -1,26 +1,36 @@
-<p>
-
+<div class="row">
+  <div class="col-sm-3">
   <button mat-fab color="accent" ><mat-icon>add_shopping_cart</mat-icon></button>
 
-  <mat-accordion>
-    <mat-expansion-panel *ngFor="let category of categories | keyvalue"
-                         (opened)="panelsOpened.set(category.key, true)"
-                         (closed)="panelsOpened.set(category.key, false)" [disabled]="!category.value.foods">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          {{category.value.catName}}  <img [alt]="category.value.catName" class="images_small"  [src]="category.value.photo" >
-        </mat-panel-title>
-        <mat-panel-description>
-          {{panelsOpened.get(category.key) ? 'ouvert' :
-          category.value.foods && category.value.foods.length > 0 ? 'choisir les aliments' : 'aucun aliment'}}
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-      <mat-selection-list #foods (selectionChange)="managerFoodsCard()" [(ngModel)]="selectedFoods">
-        <mat-list-option *ngFor="let food of category.value.foods" >
-          {{food}}
-        </mat-list-option>
-      </mat-selection-list>
+    <mat-accordion>
+      <mat-expansion-panel *ngFor="let category of categories | keyvalue: commonService.indexOrderByFoodsNumber"  (expandedChange)="onHideOthersPanels(category.value, $event)" [style.display]="panelsHidden.get(category.key) ?  'none' : 'block' " >
+        <mat-expansion-panel-header>
+          <span> {{category.key}} <img class="images_small"  [src]="category.value.photo" ></span>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <mat-list-item  *ngFor="let food of filterFoodsByCategory(category.key) | keyvalue" (click)="addFoodToCart(food.value)">
+            <div>
+              <span >{{food.value.foodName}}</span>
+              <img class="images_small"  [src]="food.value.photo" >
+            </div>
+          </mat-list-item>
+        </mat-list>
 
-    </mat-expansion-panel>
-</mat-accordion>
-</p>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+  <div  class="col-sm-5">
+    <h3>Liste des courses</h3>
+    <mat-grid-list cols="5">
+      <mat-grid-tile *ngFor="let food of selectedFoods" (mouseover)="setBackgroundTile(food.foodName, true)" (mouseleave)="setBackgroundTile(food.foodName, false)">
+        <mat-card (click)="removeFoodFromCart(food)"  [ngStyle]="getCardStyle(food)">
+          <mat-card-content>
+            <div  mat-card-avatar [ngStyle]="commonService.getAvatarStyles(food.photo)"></div>
+            <mat-card-subtitle>{{food.foodName}}</mat-card-subtitle>
+          </mat-card-content>
+          </mat-card>
+      </mat-grid-tile>
+    </mat-grid-list>
+  </div>
+
+</div>
